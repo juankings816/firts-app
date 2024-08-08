@@ -1,23 +1,25 @@
 import Link from "next/link";
+import styles from "./Post.module.css"; // Ajusta la ruta si es necesario
 
 export const metadata = {
   title: "Mi blog",
-  descriptiom: "Una descripción del sitio",
+  description: "Una descripción del sitio",
   keywords: ["p1", "p2"],
 };
+
 export default async function Post() {
   const data = await getData();
   return (
-    <div>
-      <h1>Blog de pruebas</h1>
-      <p>Este es el contenido del blog</p>
-      <br />
-      <br />
-      <ul>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Blog de pruebas</h1>
+      <p className={styles.description}>Selecciona el articulo de tu interes</p>
+      <ul className={styles.blogList}>
         {data.map(({ id, title, body }) => (
-          <li key={id}>
-            <Link href={`/blog/${id}`}> <h3>{id} -- {title}</h3></Link>            <p>{body}</p>
-            <br />
+          <li key={id} className={styles.blogItem}>
+            <Link href={`/blog/${id}`} className={styles.blogTitle}>
+              {id} -- {title}
+            </Link>
+            <p className={styles.blogBody}>{body}</p>
           </li>
         ))}
       </ul>
@@ -32,7 +34,7 @@ async function getData() {
       throw new Error("Hubo un error en la red.");
     }
     const posts = await res.json();
-     return posts;
+    return posts;
   } catch (error) {
     console.error(error);
   }
