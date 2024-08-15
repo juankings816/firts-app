@@ -3,38 +3,40 @@ import styles from "./Post.module.css";
 
 export const metadata = {
   title: "Rick and Morty",
-  description: "Listado de personajes escoje tu personaje",
+  description: "Listado de personajes, escoge tu personaje",
   keywords: ["p1", "p2"],
 };
 
 export default async function Post() {
-  const data = await getData();
+  const characters = await getCharacter();
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Blog de pruebas</h1>
-      <p className={styles.description}>Selecciona el articulo de tu interes</p>
-      <ul className={styles.blogList}>
-        {data.map(({ id, name, image }) => (
-          <li key={id} className={styles.blogItem}>
-            <Link href={`/blog/${id}`} className={styles.blogTitle}>
-              {id} -- {name}
+      <h1 className={styles.heading}>Listado de personajes</h1>
+      <p className={styles.description}>Selecciona el personaje de tu interés</p>
+      <div className={styles.carousel}>
+        {characters.results.map((character) => (
+          <div key={character.id} className={styles.card}>
+            <Link href={`/blog/${character.id}`} className={styles.blogLink}>
+              <img src={character.image} alt={character.name} className={styles.image} />
+              <p className={styles.name}>{character.name}</p>
             </Link>
-            <p className={styles.blogBody}>{image}</p>
-          </li>
+          </div>
+          
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
-async function getData() {
+async function getCharacter() {
   try {
     const res = await fetch("https://rickandmortyapi.com/api/character");
     if (!res.ok) {
       throw new Error("Hubo un error en la red.");
     }
-    const posts = await res.json();
-    return posts;
+    const characters = await res.json();
+    return characters;
   } catch (error) {
     console.error(error);
   }

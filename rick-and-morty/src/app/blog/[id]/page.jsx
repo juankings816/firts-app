@@ -2,11 +2,19 @@ import styles from '../Post.module.css';
 import { notFound } from 'next/navigation';
 import Link from "next/link";
 
-
 export async function generateStaticParams() {
-  const posts = await fetch('https://rickandmortyapi.com/api/character').then(res => res.json());
+  const posts = await fetch('https://rickandmortyapi.com/api/character')
+    .then(res => res.json());
 
-  return posts.map(post => ({ id: String(post.id) }));
+  const personajes = posts.results;
+
+  const params = personajes.map((personaje) => ({
+    params: {
+      id: personaje.id.toString()
+    }
+  }));
+
+  return params;
 }
 
 export default async function Page({ params }) {
@@ -18,10 +26,13 @@ export default async function Page({ params }) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>{data.title}</h1>
-      <p className={styles.body}>{data.body}</p>
+       <img src={data.image} alt={data.name} className={styles.image} />
+      <h1 className={styles.title}>{data.name}</h1>
+      <p className={styles.body}>{data.status}</p>
+      <p className={styles.body}>{data.species}</p>
+      <p className={styles.body}>{data.gender }</p>
       <div>
-      <Link href="/blog"> <i className={styles.home}>Back</i></Link>
+        <Link href="/blog"> <button className={styles.home}>Back</button></Link>
       </div>
     </div>
   );
